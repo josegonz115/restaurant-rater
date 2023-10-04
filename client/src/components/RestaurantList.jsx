@@ -1,10 +1,11 @@
-import React, { useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import RestaurantFinder from "../apis/RestaurantFinder";
 import { RestaurantsContext } from "../context/RestaurantsContext";
 import { useHistory } from "react-router-dom";
 import StarRating from "./StarRating";
 
 const RestaurantList = (props) => {
+  
   const { restaurants, setRestaurants } = useContext(RestaurantsContext);
   let history = useHistory();
   useEffect(() => {
@@ -17,17 +18,20 @@ const RestaurantList = (props) => {
     };
 
     fetchData();
-  }, []);
+  });
 
   const handleDelete = async (e, id) => {
     e.stopPropagation();
     try {
       const response = await RestaurantFinder.delete(`/${id}`);
+      console.log("DELETE STARTED")
+      console.log(response)
       setRestaurants(
         restaurants.filter((restaurant) => {
           return restaurant.id !== id;
         })
       );
+      history.push("/"); // DELETE IF DOES NOT WORK
     } catch (err) {
       console.log(err);
     }
@@ -48,7 +52,8 @@ const RestaurantList = (props) => {
     }
     return (
       <>
-        <StarRating rating={restaurant.id} />
+        {/* <StarRating rating={restaurant.id} /> */}
+        <StarRating rating={restaurant.average_rating} />
         <span className="text-warning ml-1">({restaurant.count})</span>
       </>
     );
@@ -68,7 +73,7 @@ const RestaurantList = (props) => {
           </tr>
         </thead>
         <tbody>
-          {restaurants &&
+          {restaurants && Array.isArray(restaurants) &&
             restaurants.map((restaurant) => {
               return (
                 <tr
@@ -89,8 +94,8 @@ const RestaurantList = (props) => {
                   </td>
                   <td>
                     <button
+                      className="btn btn-danger" 
                       onClick={(e) => handleDelete(e, restaurant.id)}
-                      className="btn btn-danger"
                     >
                       Delete
                     </button>
@@ -98,6 +103,9 @@ const RestaurantList = (props) => {
                 </tr>
               );
             })}
+
+          
+          
           {/* <tr>
             <td>mcdonalds</td>
             <td>New YOrk</td>
@@ -124,6 +132,7 @@ const RestaurantList = (props) => {
             </td>
           </tr> */}
         </tbody>
+
       </table>
     </div>
   );

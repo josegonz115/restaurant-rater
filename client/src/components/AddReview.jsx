@@ -16,6 +16,7 @@ const AddReview = () => {
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     try {
+      // importing the api from the back to front end
       const response = await RestaurantFinder.post(`/${id}/addReview`, {
         name,
         review: reviewText,
@@ -25,7 +26,7 @@ const AddReview = () => {
       history.push(location.pathname);
     } catch (err) {}
   };
-  return (
+  return ( 
     <div className="mb-2">
       <form action="">
         <div className="form-row">

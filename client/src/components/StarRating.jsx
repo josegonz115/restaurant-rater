@@ -1,5 +1,4 @@
-import React from "react";
-
+import { averageRating } from '../routes/RestaurantDetailPage';
 const StarRating = ({ rating }) => {
   //rating =4
   const stars = [];
