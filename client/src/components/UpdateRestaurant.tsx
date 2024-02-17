@@ -1,12 +1,13 @@
-import React, { useState, useContext, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
-import { RestaurantsContext } from "../context/RestaurantsContext";
+import { useState, useEffect, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { RestaurantsContext } from "../context/Contexts";
 import RestaurantFinder from "../apis/RestaurantFinder";
 
-const UpdateRestaurant = (props) => {
-  const { id } = useParams();
-  const history = useHistory();
-  const { restaurants } = useContext(RestaurantsContext);
+
+const UpdateRestaurant = () => {
+  const { id } = useParams<{id:string}>();
+  const navigate = useNavigate();
+  const { restaurants, setRestaurants } = useContext(RestaurantsContext);
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [priceRange, setPriceRange] = useState("");
@@ -14,23 +15,28 @@ const UpdateRestaurant = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await RestaurantFinder.get(`/${id}`);
-      console.log(response.data.data);
-      setName(response.data.data.restaurant.name);
-      setLocation(response.data.data.restaurant.location);
-      setPriceRange(response.data.data.restaurant.price_range);
+      setName(response.data.data.restaurants.name);
+      setLocation(response.data.data.restaurants.location);
+      setPriceRange(String(response.data.data.restaurants.price_range));
     };
 
     fetchData();
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const updatedRestaurant = await RestaurantFinder.put(`/${id}`, {
       name,
       location,
       price_range: priceRange,
     });
-    history.push("/");
+    console.log(updatedRestaurant.data);
+    setRestaurants(
+      restaurants.map((restaurant)=>{
+        return restaurant.id === Number(id) ? updatedRestaurant.data.data : restaurant;
+      })
+    );
+    navigate("/");
   };
 
   return (

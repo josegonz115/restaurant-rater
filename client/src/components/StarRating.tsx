@@ -1,5 +1,7 @@
-import { averageRating } from '../routes/RestaurantDetailPage';
-const StarRating = ({ rating }) => {
+// import  averageRating  from '../routes/RestaurantDetailPage';
+import { StarRatingProps } from "../type/type";
+
+const StarRating:React.FC<StarRatingProps> = ({ rating }) => {
   //rating =4
   const stars = [];
   for (let i = 1; i <= 5; i++) {

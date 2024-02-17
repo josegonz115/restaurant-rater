@@ -1,0 +1,17 @@
+{
+  "name": "yelp-clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:server": "cd server && pnpm start",
+    "start:client": "cd client && pnpm start",
+    "start:both": "concurrently \"pnpm run start:server\" \"pnpm run start:client\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

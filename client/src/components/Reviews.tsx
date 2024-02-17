@@ -1,7 +1,7 @@
-import React from "react";
 import StarRating from "./StarRating";
+import { ReviewProps } from "../type/type";
 
-const Reviews = ({ reviews }) => {
+const Reviews:React.FC<ReviewProps> = ({ reviews }) => {
   return (
     <div className="row row-cols-3 mb-2">
       {reviews.map((review) => {

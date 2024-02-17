@@ -1,29 +1,30 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import RestaurantFinder from "../apis/RestaurantFinder";
-import { useLocation, useParams, useHistory } from "react-router-dom";
+import { useParams} from "react-router-dom";
+import { AddReviewProps } from "../type/type";
 
-const AddReview = () => {
-  const { id } = useParams();
-  const location = useLocation();
-  console.log(location);
-  const history = useHistory();
-  console.log(id);
-
+const AddReview:React.FC<AddReviewProps> = ({ onReviewAdded }) => {
+  const { id } = useParams<{id: string}>();
   const [name, setName] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState("Rating");
 
-  const handleSubmitReview = async (e) => {
+  const handleSubmitReview = async (e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if(rating === "Rating"){
+      alert("Rating value must be set.");
+    }
     try {
       // importing the api from the back to front end
-      const response = await RestaurantFinder.post(`/${id}/addReview`, {
+      await RestaurantFinder.post(`/${id}/addReview`, {
         name,
         review: reviewText,
         rating,
       });
-      history.push("/");
-      history.push(location.pathname);
+      onReviewAdded();
+      setName('');
+      setReviewText('');
+      setRating("Rating");
     } catch (err) {}
   };
   return ( 

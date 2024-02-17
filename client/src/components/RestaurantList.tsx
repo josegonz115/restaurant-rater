@@ -1,13 +1,16 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, } from "react";
 import RestaurantFinder from "../apis/RestaurantFinder";
-import { RestaurantsContext } from "../context/RestaurantsContext";
-import { useHistory } from "react-router-dom";
+import { RestaurantsContext } from "../context/Contexts";
+// import { Restaurant } from "../type/type";
 import StarRating from "./StarRating";
+import { Restaurant } from "../type/type";
+import { useNavigate } from "react-router-dom";
 
-const RestaurantList = (props) => {
-  
+
+const RestaurantList:React.FC = () => {
   const { restaurants, setRestaurants } = useContext(RestaurantsContext);
-  let history = useHistory();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -18,35 +21,35 @@ const RestaurantList = (props) => {
     };
 
     fetchData();
-  });
+  },[]);
 
-  const handleDelete = async (e, id) => {
+  const handleDelete = async (e:React.MouseEvent<HTMLButtonElement>, id:number) => {
     e.stopPropagation();
     try {
       const response = await RestaurantFinder.delete(`/${id}`);
-      console.log("DELETE STARTED")
-      console.log(response)
+      console.log("DELETE STARTED");
+      console.log(response);
       setRestaurants(
         restaurants.filter((restaurant) => {
           return restaurant.id !== id;
         })
       );
-      history.push("/"); // DELETE IF DOES NOT WORK
+      navigate("/"); // DELETE IF DOES NOT WORK
     } catch (err) {
       console.log(err);
     }
   };
 
-  const handleUpdate = (e, id) => {
+  const handleUpdate = (e:React.MouseEvent<HTMLButtonElement>, id:number) => {
     e.stopPropagation();
-    history.push(`/restaurants/${id}/update`);
+    navigate(`/restaurants/${id}/update`);
   };
 
-  const handleRestaurantSelect = (id) => {
-    history.push(`/restaurants/${id}`);
+  const handleRestaurantSelect = (id:number) => {
+    navigate(`/restaurants/${id}`);
   };
 
-  const renderRating = (restaurant) => {
+  const renderRating = (restaurant:Restaurant) => {
     if (!restaurant.count) {
       return <span className="text-warning">0 reviews</span>;
     }

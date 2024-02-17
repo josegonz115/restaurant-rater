@@ -1,8 +1,8 @@
-require('dotenv').config()
-const express = require('express')
-const cors = require("cors");
-const db = require('./db')
-const morgan = require('morgan')
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import * as db from './db/index.js'
+import morgan from 'morgan';
 
 const app = express()
 
@@ -32,37 +32,32 @@ app.get('/api/v1/restaurants', async (req, res)=>{
 
 // GET a restaurant
 app.get('/api/v1/restaurants/:id', async (req, res)=>{
-    console.log(req.params.id)
-
+    console.log(req.params.id);
     try {
         const restaurant = await db.query(
             "SELECT * FROM restaurants LEFT JOIN (SELECT restaurant_id, COUNT(*), TRUNC(AVG(rating),1) AS average_rating FROM reviews GROUP BY restaurant_id) reviews ON restaurants.id = reviews.restaurant_id WHERE id = $1",
-            [req.params.id])
+            [req.params.id]);
 
         const reviews = await db.query(
             "SELECT * FROM reviews WHERE restaurant_id=$1",
             [req.params.id]
-        )
-        console.log(reviews)
-
+        );
+        console.log(reviews);
         res.status(200).json({
             status: "success",
             data: {
                 restaurants : restaurant.rows[0],
                 reviews: reviews.rows,
             }
-        })
+        });
     } catch (err) {
-        console.log(err)
+        console.log(err.message);
     }
-
-
-})
+});
 
 // POST a restaurant
 app.post('/api/v1/restaurants', async (req, res)=>{
-    console.log(req.body)
-
+    console.log("Request body:", req.body);
     try {
         const results = await db.query(
             "INSERT INTO restaurants (name, location, price_range) VALUES ($1, $2, $3) RETURNING *;",
@@ -76,9 +71,8 @@ app.post('/api/v1/restaurants', async (req, res)=>{
             }
         })
     } catch (err) {
-        console.log(err)
+        console.log('Error:', err.message);
     }
-
 })
 
 // PUT Restaurants

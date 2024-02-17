@@ -1,21 +1,21 @@
-import { useState, createContext } from "react";
+import { useState } from "react";
+import { Restaurant } from "../type/type";
+import { RestaurantsContext } from './Contexts';
 
-export const RestaurantsContext = createContext();
+type RestaurantsContextProviderProps = {
+  children: React.ReactNode;
+};
 
-export const RestaurantsContextProvider = (props) => {
-  const [restaurants, setRestaurants] = useState([]);
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+export const RestaurantsContextProvider = ({children}: RestaurantsContextProviderProps) => {
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
 
-  // const addRestaurants = (restaurant) => {
-  //   setRestaurants([...restaurants, restaurant]);
-  // };
-
-  const addRestaurants = (restaurant) => {
+  const addRestaurants = (restaurant: Restaurant) => {
     if (!restaurant || typeof restaurant !== "object") {
       console.error("Invalid restaurant:", restaurant);
       return;
     }
-    if(restaurants === 0){
+    if(restaurants.length === 0){
       setRestaurants([restaurant])
     }
     else if (Array.isArray(restaurant)) {
@@ -24,6 +24,7 @@ export const RestaurantsContextProvider = (props) => {
       setRestaurants([...restaurants, restaurant]);
     }
   };
+  
   return (
     <RestaurantsContext.Provider
       value={{
@@ -34,7 +35,7 @@ export const RestaurantsContextProvider = (props) => {
         setSelectedRestaurant,
       }}
     >
-      {props.children}
+      {children}
     </RestaurantsContext.Provider>
   );
 };

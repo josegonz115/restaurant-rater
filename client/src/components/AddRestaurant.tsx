@@ -1,15 +1,19 @@
 import React, { useState, useContext } from "react";
 import RestaurantFinder from "../apis/RestaurantFinder";
-import { RestaurantsContext } from "../context/RestaurantsContext";
+import { RestaurantsContext } from "../context/Contexts";
 
 const AddRestaurant = () => {
   const { addRestaurants } = useContext(RestaurantsContext);
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
-  const [priceRange, setPriceRange] = useState("Price Range");
+  const [priceRange, setPriceRange] = useState<string >("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if(priceRange === ""){
+      alert("Price range is required");
+      return;
+    }
     try {
       const response = await RestaurantFinder.post("/", {
         name,
@@ -17,7 +21,10 @@ const AddRestaurant = () => {
         price_range: priceRange,
       });
       console.log(response.data.data);
-      addRestaurants(response.data.data.restaurant);
+      addRestaurants(response.data.data.restaurants);
+      setName('');
+      setLocation('');
+      setPriceRange('');
     } catch (err) {
       console.log(err);
     }
@@ -50,7 +57,7 @@ const AddRestaurant = () => {
               onChange={(e) => setPriceRange(e.target.value)}
               className="custom-select my-1 mr-sm-2"
             >
-              <option disabled>Price Range</option>
+              <option disabled value="">Price Range</option>
               <option value="1">$</option>
               <option value="2">$$</option>
               <option value="3">$$$</option>
